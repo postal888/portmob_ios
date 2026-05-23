@@ -1,0 +1,23 @@
+{
+  "name": "portmob_ios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Capacitor iOS shell for PortuPrep Cards. Clone this repo into Port_mob/ios on Mac.",
+  "scripts": {
+    "build": "bash mac-build.sh",
+    "pod:install": "cd App && pod install",
+    "open:xcode": "bash -c 'cd \"$(dirname \"$0\")/..\" && npx cap open ios'"
+  },
+  "dependencies": {
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/browser": "^7.0.5",
+    "@capacitor/core": "^7.6.2",
+    "@capacitor/ios": "^7.6.2",
+    "@capacitor/status-bar": "^7.0.2",
+    "@mozartec/capacitor-microphone": "^7.1.0",
+    "capacitor-native-settings": "^7.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.6.2"
+  }
+}

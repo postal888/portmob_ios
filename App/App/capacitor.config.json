@@ -1,0 +1,27 @@
+{
+	"appId": "com.portuprep.cards",
+	"appName": "PortuPrep Cards",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "https"
+	},
+	"ios": {
+		"contentInset": "automatic",
+		"scrollEnabled": true
+	},
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": true
+		},
+		"StatusBar": {
+			"overlaysWebView": false
+		}
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"StatusBarPlugin",
+		"MicrophonePlugin",
+		"NativeSettingsPlugin"
+	]
+}
