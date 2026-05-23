@@ -1,7 +1,20 @@
 PortuPrep Cards — iOS (Capacitor)
 ==================================
 
-Pull the repo on Mac, then from the project root:
+Repo: https://github.com/postal888/portmob_ios
+
+This repository contains only the native iOS shell (Xcode + Podfile).
+Web source lives in https://github.com/postal888/Port_mob
+
+--- MacinCloud: two repos ---
+
+1) Clone main app and insert this repo as ios/:
+
+  git clone https://github.com/postal888/Port_mob.git
+  cd Port_mob
+  git clone https://github.com/postal888/portmob_ios.git ios
+
+2) Build and open Xcode:
 
   npm ci
   npm run build:ios
@@ -12,4 +25,9 @@ In Xcode: Signing & Capabilities → Team, then Product → Run or Archive.
 
 Bundle ID: com.portuprep.cards
 
-Web assets (ios/App/App/public) are not in git — they are copied by `npm run build:ios`.
+Web assets (ios/App/App/public) are not in git — copied by `npm run build:ios`.
+
+--- Windows: push iOS updates to this repo ---
+
+  npm run build:ios
+  npm run push:ios
