@@ -1,0 +1,15 @@
+PortuPrep Cards — iOS (Capacitor)
+==================================
+
+Pull the repo on Mac, then from the project root:
+
+  npm ci
+  npm run build:ios
+  cd ios/App && pod install
+  cd ../.. && npx cap open ios
+
+In Xcode: Signing & Capabilities → Team, then Product → Run or Archive.
+
+Bundle ID: com.portuprep.cards
+
+Web assets (ios/App/App/public) are not in git — they are copied by `npm run build:ios`.
