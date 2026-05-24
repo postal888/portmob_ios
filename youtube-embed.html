@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>YouTube</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+      }
+      #player {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="player"></div>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var videoId = params.get("v") || params.get("videoId") || "";
+        var start = params.get("start");
+        var ccLang = params.get("cc_lang_pref") || params.get("ccLang") || "pt";
+        var pageOrigin = window.location.origin;
+        var embedOrigin = pageOrigin.indexOf("localhost") >= 0 ? "https://www.youtube.com" : pageOrigin;
+        var player = null;
+        var pollId = null;
+
+        function post(payload) {
+          try {
+            window.parent.postMessage(Object.assign({ source: "portuprep-yt" }, payload), "*");
+          } catch (e) {
+            /* ignore */
+          }
+        }
+
+        function startPoll() {
+          if (pollId) window.clearInterval(pollId);
+          pollId = window.setInterval(function () {
+            if (!player || typeof player.getCurrentTime !== "function") return;
+            try {
+              post({
+                event: "time",
+                currentTime: player.getCurrentTime(),
+                playerState: player.getPlayerState(),
+              });
+            } catch (e) {
+              /* ignore */
+            }
+          }, 250);
+        }
+
+        function onReady() {
+          post({ event: "ready" });
+          if (start && Number(start) > 1) {
+            try {
+              player.seekTo(Number(start), true);
+            } catch (e) {
+              /* ignore */
+            }
+          }
+          startPoll();
+        }
+
+        window.addEventListener("message", function (event) {
+          var data = event.data;
+          if (!data || data.source !== "portuprep-yt-host" || !player) return;
+          if (data.event === "seek" && typeof data.sec === "number") {
+            try {
+              player.seekTo(data.sec, true);
+            } catch (e) {
+              /* ignore */
+            }
+          }
+        });
+
+        if (!videoId) {
+          post({ event: "error", message: "missing video id" });
+          return;
+        }
+
+        var tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        window.onYouTubeIframeAPIReady = function () {
+          player = new YT.Player("player", {
+            host: "https://www.youtube-nocookie.com",
+            videoId: videoId,
+            playerVars: {
+              playsinline: 1,
+              rel: 0,
+              enablejsapi: 1,
+              origin: embedOrigin,
+              widget_referrer: embedOrigin,
+              cc_load_policy: 1,
+              cc_lang_pref: ccLang,
+              start: start && Number(start) > 1 ? Math.floor(Number(start)) : undefined,
+              modestbranding: 1,
+            },
+            events: {
+              onReady: onReady,
+              onStateChange: function (e) {
+                post({ event: "state", playerState: e.data });
+              },
+              onError: function (e) {
+                post({ event: "error", code: e.data });
+              },
+            },
+          });
+        };
+      })();
+    </script>
+  </body>
+</html>
